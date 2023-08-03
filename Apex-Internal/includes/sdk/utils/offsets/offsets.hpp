@@ -3,7 +3,7 @@
 
 namespace offsets_modules 
 {
-	inline DWORD64 module_base = (DWORD64)m_pMemory->pNTModules->NtGetModuleHandleExW(__("r5apex.exe"));
+	inline DWORD64 module_base = (DWORD64)m_pMemory->pNTModules->NtGetModuleHandleExW(__("EasyAntiCheat_launcher.exe"));
 }
 
 namespace offsets

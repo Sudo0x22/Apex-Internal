@@ -60,9 +60,9 @@ public:
 	Vec3 pos{ 0,0,0 };
 	std::string name;
 
-	DWORD64 GetEntityIndex(DWORD64 ModuleBase, DWORD64 Offset, INT Index, INT HexCode)
+	DWORD64 GetEntityIndex(DWORD64 ModuleBase, DWORD64 Offset, DWORD64 Index, INT HexCode)
 	{
-		this->Entity = *(DWORD*)(ModuleBase + Offset + Index * HexCode);
+		this->Entity = *(DWORD64*)(ModuleBase + Offset + Index * HexCode);
 		return this->Entity;
 	}
 
@@ -116,6 +116,22 @@ public:
 	{
 		this->pos = *(Vec3*)(this->Entity + offset);
 		return true;
+	}
+	Vector3 BonePostition(int boneIndex, DWORD64 offset, DWORD64 second_offset)
+	{
+		Bone bone = { };
+		Vector3 vec_bone = Vector3();
+		Vector3 pos = this->Postition(offset);
+		
+		ULONG64 bone_array = *(ULONG64*)(this->Entity + second_offset);
+		ULONG64 bone_location = (boneIndex * 0x30);
+		bone = *(Bone*)(bone_array + bone_location);
+		
+		vec_bone.x = bone.x + pos.x;
+		vec_bone.y = bone.y + pos.y;
+		vec_bone.z = bone.z + pos.z;
+		
+		return vec_bone;
 	}
 public:
 	bool GetName(DWORD64 offset)

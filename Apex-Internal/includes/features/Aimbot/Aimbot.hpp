@@ -4,6 +4,34 @@
 #include"../../sdk/utils/memory/memory.h"
 #include"../Misc/Misc.h"
 
+class Hitbox
+{
+public:
+	int TargetHitbox()
+	{
+		switch (aimbot::hitboxes::player_hitbox_items)
+		{
+		case 0:
+			return 10;
+			break;
+		case 1:
+			return 9;
+			break;
+		case 2:
+			return 8;
+			break;
+		case 3:
+			return 7;
+			break;
+		case 4:
+			return 6;
+			break;
+		default:
+			return 8;
+		}
+	}
+}; Hitbox* pHitbox = new Hitbox();
+
 class CAimbot
 {
 private:
@@ -18,6 +46,42 @@ private:
 	{
 		if (!LocalEntity.Entity)
 			return STATUS_ERROR;
+
+		CBaseEntity BaseEntity = CBaseEntity();
+		for (int index = 0; index < 100; index++)
+		{
+			DWORD64 Entity = BaseEntity.GetEntityIndex(global::g_hGameImage, offsets::cl_entitylist, index, 32);
+			
+			if (!Entity || Entity == LocalEntity.Entity)
+				continue;
+
+			DWORD64 EntityTeam = *(DWORD64*)(Entity + Classes::CBaseEntity::m_iTeamNum);
+			DWORD64 LocalTeam = *(DWORD64*)(LocalEntity.Entity + Classes::CBaseEntity::m_iTeamNum);
+
+			if (EntityTeam == LocalTeam)
+				continue;
+
+			CGlobalVars GlobalVars = *(CGlobalVars*)(offsets_modules::module_base + offsets::global_vars);
+
+			if (!BaseEntity.IsVisible(GlobalVars.curtime, 0x00))
+				continue;
+			
+			if (!aimbot::draw_aim_fov)
+				continue;
+			
+			if (!abs(aimbot::aim_fov))
+				continue;
+			
+			if (!pKeyInput->GetKeyState(VK_RBUTTON))
+				continue;
+
+			Vector3 EntityPos = BaseEntity.Postition(Classes::CPlayer::m_vecAbsOrigin);
+			Vector3 target_bone = BaseEntity.BonePostition(pHitbox->TargetHitbox(),
+				Classes::CPlayer::m_vecAbsOrigin, Classes::CRopeKeyframe::m_bConstrainBetweenEndpoints);
+			
+			LocalEntity.SetViewAngles(Classes::CPlayer::m_view_angles, EntityPos);
+			LocalEntity.SetViewAngles(Classes::CPlayer::m_view_angles, target_bone);
+		}
 
 		return STATUS_SUCCESS;
 	}

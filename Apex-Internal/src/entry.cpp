@@ -21,7 +21,7 @@ public:
 
 __declspec() attach* attach::init_thread(HMODULE hModule, void* hBuffer)
 {
-	while(!m_pMemory->pNTModules->NtGetModuleHandleExW(__("r5apex.exe")))
+	while(!m_pMemory->pNTModules->NtGetModuleHandleExW(__("EasyAntiCheat_launcher.exe")))
 		spoof_call::SleepThread(420);
 
 	pInitModules.GetGlobals(hModule);

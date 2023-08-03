@@ -17,8 +17,10 @@ public:
 		}
 		else
 		{
-			if (enabled) {
-				enabled = false; *(int*)(offsets_modules::module_base + offsets::thirdperson_override) = 0;
+			if (enabled) 
+			{
+				enabled = false; 
+				*(int*)(offsets_modules::module_base + offsets::thirdperson_override) = 0;
 				*(int*)(LocalEntity.Entity + offsets::m_thirdPersonShoulderView) = 0;
 			}
 		}
@@ -49,13 +51,15 @@ public:
 		CBaseEntity Entity = CBaseEntity();
 		for (int i = 0; i < 200; i++)
 		{
-			DWORD64 BaseEntity = Entity.GetEntityIndex(offsets_modules::module_base,
-				offsets::cl_entitylist, i, 32);
+			DWORD64 BaseEntity = *(DWORD64*)(offsets_modules::module_base +
+				offsets::cl_entitylist + i * 32);
 			
 			if (!BaseEntity || BaseEntity == LocalEntity.Entity || !LocalEntity.Entity)
 				continue;
-
-			*(bool*)(BaseEntity + offsets::glow_enable) = 1;
+			
+			*(GlowMode*)(BaseEntity + offsets::glow_type) = Entity.GlowStyle;
+			*(ColorRGB*)(BaseEntity + offsets::glow_color) = ColorRGB{ 155,155,155 };
+			*(bool*)(BaseEntity + offsets::glow_enable) = true;
 		}
 		return STATUS_SUCCESS; 
 	}
@@ -65,16 +69,28 @@ public:
 		if (!LocalEntity.Entity)
 			return STATUS_ERROR;
 
-		CBaseEntity Entity;
-		for (int i = 0; i < 12000; i++)
+		//*(DWORD64*)(BaseEntity + 0x2C0) = 0x51408A89;
+		CBaseEntity Entity = CBaseEntity();
+		for (int Index = 0; Index < 12000; Index++)
 		{
-			DWORD64 BaseEntity = Entity.GetEntityIndex(offsets_modules::module_base,
-				offsets::cl_entitylist, i, 32);
-			if (!BaseEntity || Entity.Entity == LocalEntity.Entity)
+			DWORD64 BaseEntity = *(DWORD64*)(offsets_modules::module_base +
+				offsets::cl_entitylist + Index * 32);
+			if (!BaseEntity || BaseEntity == LocalEntity.Entity)
 				continue;
-			*(DWORD64*)(BaseEntity + 0x2C0) = 0x51408A89;
-		}
+			
+			DWORD64 EntityTeam = *(DWORD64*)(BaseEntity + Classes::CBaseEntity::m_iTeamNum);
+			DWORD64 LocalTeam = *(DWORD64*)(LocalEntity.Entity + Classes::CBaseEntity::m_iTeamNum);
 
+			if (EntityTeam == LocalTeam)
+				continue;
+			
+			if (EntityTeam != LocalTeam)
+				continue;
+		
+			*(GlowMode*)(BaseEntity + offsets::glow_type) = Entity.GlowStyle;
+			*(ColorRGB*)(BaseEntity + offsets::glow_color) = ColorRGB(155, 155, 155);
+			*(bool*)(BaseEntity + 0x2C0) = true;
+		}
 		return STATUS_SUCCESS;
 	}
 
@@ -82,15 +98,6 @@ public:
 	{
 		if (!LocalEntity.Entity)
 			return STATUS_ERROR;
-
-		DWORD64 ViewModuleHandle = (DWORD64)(LocalEntity.Entity + 0x2d60) & 0xFFFF;
-		DWORD64 ViewModelPtr = (DWORD64)(offsets_modules::module_base + offsets::cl_entitylist + ViewModuleHandle & 0x20);
-
-		*(int*)(ViewModelPtr + 0x3D0) = 2;
-		*(GlowMode*)(ViewModelPtr + 0x2C4) = { 101,101,46,0 };
-		*(float*)(ViewModelPtr + 0x1D0) = 1.f;
-		*(float*)(ViewModelPtr + 0x1D4) = 19.f;
-		*(float*)(ViewModelPtr + 0x1D8) = 20.f;
 
 		return STATUS_SUCCESS;
 	}
@@ -157,7 +164,7 @@ public:
 		
 		if (visuals::enable_outline) { pVisualFeatures->PlayerOutline(LocalEntity); }
 		
-		if (visuals::item_esp) { pVisualFeatures->IteamOutline(LocalEntity); }
+		if (visuals::item_esp) { pVisualFeatures->ItemOutline(LocalEntity); }
 		if (visuals::weapon_chams) { pVisualFeatures->WeaponChams(LocalEntity); }
 		
 		return STATUS_SUCCESS;
