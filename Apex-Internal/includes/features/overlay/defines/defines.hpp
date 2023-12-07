@@ -17,6 +17,7 @@ static uintx_t* MethodsTable = NULL;
 
 typedef HRESULT(__stdcall* oPresent_t)(IDXGISwapChain*, UINT, UINT);
 typedef LRESULT(__stdcall* oWndProc_t)(HWND, UINT, WPARAM, LPARAM);
+HRESULT(*ResizeOriginal)(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags) = nullptr;
 
 typedef BOOL(__stdcall* oCursor_t)(bool);
 typedef BOOL(__stdcall* oShowCursor_t)(int, int);
@@ -37,6 +38,7 @@ public:
 	oWndProc_t oWndProc = 0;
 	oCursor_t oCursor = 0;
 	oShowCursor_t oShowCursor = 0;
+	//oResizeBuffer_t oResizeBuffer = 0;
 public:
 	ID3D11Device* pDevice = nullptr;
 	ID3D11DeviceContext* pContext = nullptr;

@@ -1,6 +1,7 @@
 #pragma once
 #include<cstdint>
 #include <string.h>
+#include"../capture/capture.hpp"
 class recv_table;
 
 class RecvProp
@@ -35,40 +36,3 @@ public:
     bool        m_bInMainList;
 };
 
-class ClientClass
-{
-public:
-    void* m_pCreateFn;
-    void* m_pCreateEventFn;
-    char* m_pNetworkName;
-    recv_table* m_pRecvTable;
-    ClientClass* m_pNext;
-    int                m_ClassID;
-public:
-    virtual ClientClass* GetAllClasses(void);
-};
-
-intptr_t get_offset(recv_table* pTable, const char* table_name, const char* netvar_name) {
-    for (int i = 0; i < pTable->m_nProps; i++)
-    {
-        RecvProp prop = pTable->m_pProps[i];
-        if (!_stricmp(prop.m_pVarName, netvar_name)) { return prop.m_Offset; }
-        if (prop.m_pDataTable)
-        {
-            intptr_t offset = get_offset(prop.m_pDataTable, table_name, netvar_name);
-            if (offset) { return offset + prop.m_Offset; }
-        }
-    }
-    return 0;
-}
-intptr_t get_net_var(const char* table_name, const char* netvar_name, ClientClass* client_class) {
-    ClientClass* current_node = client_class;
-    for (auto current_node = client_class; current_node; current_node = current_node->m_pNext)
-    {
-        if (!_stricmp(table_name, current_node->m_pRecvTable->m_pNetTableName))
-        {
-            return get_offset(current_node->m_pRecvTable, table_name, netvar_name);
-        }
-    }
-    return 0;
-}

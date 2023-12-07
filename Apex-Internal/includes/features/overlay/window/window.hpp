@@ -11,13 +11,14 @@ class Window
 {
 public:
 	ImVec2 TitlePos = ImVec2(0.5, 0.5);
-	ImVec2 WindowSize = ImVec2(788, 425);
+	ImVec2 WindowSize = ImVec2(795, 425);
 public:
 	float WindowRounding = 4.0f;
 	float ChildRounding = 4.0f;
 public:
 	__forceinline void InitializeWindow()
 	{
+		SPOOF_FUNC;
 		ImGuiStyle* pStyle = &ImGui::GetStyle();
 		pStyle->WindowTitleAlign = this->TitlePos;
 		pStyle->WindowRounding = this->WindowRounding;
@@ -26,8 +27,19 @@ public:
 
 ImU32 GetU32(int r, int b, int g, int a)
 {
+	SPOOF_FUNC;
 	return ((a & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8)
 		+ (r & 0xff);
+}
+
+ImVec4 Hex(int hexValue, float alpha)
+{
+	SPOOF_FUNC;
+	float r = (hexValue >> 16) & 0xFF;
+	float g = (hexValue >> 8) & 0xFF;
+	float b = hexValue & 0xFF;
+
+	return ImVec4(r / 255, g / 255, b / 255, alpha);
 }
 
 class WindowStyle
@@ -37,6 +49,7 @@ public:
 	ImFont* SectionFont = nullptr;
 	ImFont* VerdanaSmall = nullptr;
 	ImFont* IconFont = nullptr;
+	ImFont* gameFont = NULL;
 public:
 	ImColor WindowBackground = ImColor(0,0,0,250);
 	
@@ -59,36 +72,68 @@ public:
 public:
 	__forceinline void InitializeStyle()
 	{
-		ImGuiStyle* pStyle = &ImGui::GetStyle();
-		pStyle->Colors[ImGuiCol_WindowBg] = this->WindowBackground;
-		pStyle->Colors[ImGuiCol_TitleBg] = this->WindowTitleBar;
+		SPOOF_FUNC;
+		ImGuiStyle& style = ImGui::GetStyle();
+		ImGui::StyleColorsDark();
 
-		pStyle->Colors[ImGuiCol_TitleBgActive] = this->WindowTitleBar;
-		pStyle->Colors[ImGuiCol_Separator] = this->WindowSeparator;
-		pStyle->Colors[ImGuiCol_Border] = this->WindowBorder;
+		style.WindowRounding = 4;
+		style.ChildRounding = 4;
+		style.FrameRounding = 3;
+		style.PopupRounding = 3;
+		style.GrabRounding = 3;
+		style.TabRounding = 3;
+		style.ScrollbarRounding = 3;
+		style.ButtonTextAlign = { 0.5f, 0.5f };
+		style.WindowTitleAlign = { 0.5f, 0.5f };
+		style.FramePadding = { 6.0f, 6.0f };
+		style.ItemSpacing = { 9.0f, 9.0f };
+		style.WindowPadding = { 9.0f, 9.0f };
+		style.ItemInnerSpacing = { 8.0f, 4.0f };
+		style.WindowBorderSize = 1;
+		style.FrameBorderSize = 1;
+		style.ScrollbarSize = 12.f;
+		style.GrabMinSize = 8.f;
+		//style.WindowShadowSize = 0.f;
 
-		pStyle->Colors[ImGuiCol_Button] = this->WindowButtonActive;
-		pStyle->Colors[ImGuiCol_ButtonActive] = this->WindowButtonActive;
-		pStyle->Colors[ImGuiCol_ButtonHovered] = this->WindowButtonHovered;
-		pStyle->Colors[ImGuiCol_ChildBg] = this->ChildBackground;
+		//style.Colors[ImGuiCol_WindowShadow] = Hex(0xDB4141, 1.0f); // 0x5E61BA
 
-		pStyle->Colors[ImGuiCol_SliderGrab] = this->WindowSlider;
-		pStyle->Colors[ImGuiCol_SliderGrabActive] = this->WindowSliderGrab;
-		pStyle->Colors[ImGuiCol_FrameBg] = this->WindowFrameBackground;
+		style.Colors[ImGuiCol_WindowBg] = Hex(0x111111, 1.0f);
+		style.Colors[ImGuiCol_ChildBg] = Hex(0x151515, 1.0f);
+		style.Colors[ImGuiCol_MenuBarBg] = Hex(0x191919, 1.0f);
 
-		pStyle->Colors[ImGuiCol_FrameBgHovered] = this->WindowFrameHover;
-		pStyle->Colors[ImGuiCol_FrameBgActive] = this->WindowFrameActive;
-		
-		pStyle->Colors[ImGuiCol_HeaderHovered] = this->WindowFrameExtra;
-		pStyle->Colors[ImGuiCol_Header] = this->WindowFrameExtra;
-		pStyle->Colors[ImGuiCol_HeaderActive] = this->WindowFrameExtra;
+		style.Colors[ImGuiCol_TitleBg] = Hex(0x111111, 1.0f);
+		style.Colors[ImGuiCol_TitleBgActive] = Hex(0x111111, 1.0f);
 
-		pStyle->Colors[ImGuiCol_DragDropTarget] = this->WindowFrameExtra;
-		pStyle->Colors[ImGuiCol_MenuBarBg] = this->WindowFrameExtra;
-		pStyle->Colors[ImGuiCol_PopupBg] = this->WindowBackground;
+		style.Colors[ImGuiCol_Border] = Hex(0x1F1F1F, 1.0f);
+		style.Colors[ImGuiCol_Separator] = Hex(0x1F1F1F, 1.0f);
+
+		style.Colors[ImGuiCol_SliderGrab] = Hex(0x5500ffd9, 1.0f);
+		style.Colors[ImGuiCol_SliderGrabActive] = Hex(0x5500ffd9, 0.8f);
+
+		style.Colors[ImGuiCol_CheckMark] = Hex(0xE8E8E8, 1.0f);
+		style.Colors[ImGuiCol_Text] = Hex(0xE8E8E8, 1.0f);
+		style.Colors[ImGuiCol_TextDisabled] = Hex(0x616161, 1.0f);
+
+		style.Colors[ImGuiCol_Header] = Hex(0x212121, 1.0f);
+		style.Colors[ImGuiCol_HeaderHovered] = Hex(0x444444, 1.0f);
+		style.Colors[ImGuiCol_HeaderActive] = Hex(0x363636, 1.0f);
+
+		style.Colors[ImGuiCol_FrameBg] = Hex(0x111111, 1.0f);
+		style.Colors[ImGuiCol_FrameBgHovered] = Hex(0x111111, 0.9f);
+		style.Colors[ImGuiCol_FrameBgActive] = Hex(0x111111, 0.8f);
+
+		style.Colors[ImGuiCol_Button] = Hex(0x111111, 1.0f);
+		style.Colors[ImGuiCol_ButtonHovered] = Hex(0x111111, 0.8f);
+		style.Colors[ImGuiCol_ButtonActive] = Hex(0x111111, 0.6f);
+
+		style.Colors[ImGuiCol_ScrollbarBg] = ImColor(0, 0, 0, 0);
+		style.Colors[ImGuiCol_ScrollbarGrab] = ImColor(0, 0, 0, 0);
+		style.Colors[ImGuiCol_ScrollbarGrabActive] = ImColor(0, 0, 0, 0);
+		style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImColor(0, 0, 0, 0);
 	}
 	__declspec() void InitializeFonts()
 	{
+		SPOOF_FUNC;
 		{
 			const auto& io = ImGui::GetIO();
 			auto fontConfig = ImFontConfig();
@@ -103,6 +148,8 @@ public:
 			iconConfig.PixelSnapH = true;
 			IconFont = io.Fonts->AddFontFromMemoryCompressedTTF(MaterialFont_compressed_data, MaterialFont_compressed_size, 12.f, &iconConfig, iconRange);
 			
+			gameFont = ImGui::GetIO().Fonts->AddFontDefault();
+
 			io.Fonts->Build();
 		}
 	}

@@ -1,8 +1,10 @@
 #include"../../../../features/overlay/overlay.hpp"
 #include"../../../apex_src/apex_src.hpp"
 #include"../../../utils/utils.hpp"
+#include"../../../../features/anti_aim/anti_aim.hpp"
 
-namespace client
+
+/*namespace client
 {
 	inline hook::table Table;
 
@@ -36,4 +38,4 @@ namespace client
 	}
 
 	void create_hook();
-}
+}*/

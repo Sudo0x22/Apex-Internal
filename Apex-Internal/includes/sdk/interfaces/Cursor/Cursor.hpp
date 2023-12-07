@@ -15,19 +15,19 @@ extern "C" {namespace Cursor
 		return SpoofReturn(__safecall(SetCursorPos).get(), x, y); 
 	}
 
-	NTSTATUS WINAPI init_hook()
+	NTSTATUS WINAPI init_hook(LPVOID pFunction, LPVOID pDetour, LPVOID* pOriginal)
 	{
-		if (NTMakeHook::NTCreateHook(&SetCursorPos, &cursor_hk, reinterpret_cast<LPVOID*>(&pD3D11->oCursor)) != MH_OK)
-			return STATUS_ERROR;
-		if (NTMakeHook::NTEnableHook(&SetCursorPos) != MH_OK)
-			return STATUS_ERROR;
-		return STATUS_SUCCESS;
+		if (NTMakeHook::NTCreateHook(pFunction, pDetour, pOriginal) != MH_OK)
+			return FALSE;
+		if (NTMakeHook::NTEnableHook(pFunction) != MH_OK)
+			return FALSE;
+		return TRUE;
 	}
 
-	NTSTATUS WINAPI remove_hook()
+	NTSTATUS WINAPI remove_hook(LPVOID pFunc)
 	{
-		NTMakeHook::NTDisableHook(&SetCursorPos);
-		NTMakeHook::NTRemoveHook(&SetCursorPos);
-		return STATUS_SUCCESS;
+		NTMakeHook::NTDisableHook(pFunc);
+		NTMakeHook::NTRemoveHook(pFunc);
+		return TRUE;
 	}
 }}

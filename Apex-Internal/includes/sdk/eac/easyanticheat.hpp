@@ -301,7 +301,7 @@ NTSTATUS WINAPI MyZwQueryVirtualMemory(HANDLE  ProcessHandle, PVOID BaseAddress,
 	return nt;
 }
 
-/*
+
 
 typedef LONG(WINAPI *NtQueryInformationThreadProc)(
 _In_       HANDLE ThreadHandle,
@@ -310,7 +310,7 @@ _Inout_    PVOID ThreadInformation,
 _In_       ULONG ThreadInformationLength,
 _Out_opt_  PULONG ReturnLength
 );
-*/
+
 typedef NTSTATUS(NTAPI* _ZwQueryInformationThread)(IN HANDLE ThreadHandle, IN THREADINFOCLASS ThreadInformationClass, PVOID ThreadInformation, _In_ ULONG ThreadInformationLength, _Out_opt_ PULONG ReturnLength);
 _ZwQueryInformationThread Old_ZwQueryInformationThread;
 NTSTATUS NTAPI MyZwQueryInformationThread(IN HANDLE ThreadHandle, IN THREADINFOCLASS ThreadInformationClass, PVOID ThreadInformation, _In_ ULONG ThreadInformationLength, _Out_opt_ PULONG ReturnLength)
@@ -457,7 +457,7 @@ SIZE_T WINAPI MyVirtualQuery(HANDLE lpAddress, PMEMORY_BASIC_INFORMATION lpBuffe
 	}
 	return shit;
 }
-/*
+
 typedef __int64(WINAPI *_RtlUserThreadStart)(PTHREAD_START_ROUTINE pfnStartAddr, PVOID pvParam);
 _RtlUserThreadStart Old_RtlUserThreadStart;
 typedef __int64(WINAPI *_BaseThreadInitThunk)(DWORD LdrReserved, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter);
@@ -472,9 +472,9 @@ __int64 WINAPI MyRtlUserThreadStart(PTHREAD_START_ROUTINE pfnStartAddr, PVOID pv
 		return BaseThreadInitThunk(0, pfnStartAddr, pvParam);
 	}
 	return Old_RtlUserThreadStart(pfnStartAddr, pvParam);
-}*/
+}
 DWORD ThreadID;
-/*
+
 typedef BOOL(WINAPI *_Thread32Next)(HANDLE hSnapshot,LPTHREADENTRY32 lpte);
 _Thread32Next Old_Thread32Next;
 BOOL MyThread32Next(HANDLE hSnapshot, LPTHREADENTRY32 lpte)
@@ -487,7 +487,7 @@ BOOL MyThread32Next(HANDLE hSnapshot, LPTHREADENTRY32 lpte)
 		lpte->th32ThreadID = random(666);
 	}
 	return Result;
-}*/
+}
 typedef HANDLE(WINAPI* _OpenThread)(_In_ DWORD dwDesiredAccess, _In_ BOOL bInheritHandle, _In_ DWORD dwThreadId);
 _OpenThread Old_OpenThread;
 HANDLE MyOpenThread(_In_ DWORD dwDesiredAccess, _In_ BOOL bInheritHandle, _In_ DWORD dwThreadId)
@@ -513,16 +513,16 @@ void StartHook()
 		_RtlGetNativeSystemInformation RtlGetNativeSystemInformation = (_RtlGetNativeSystemInformation)GetProcAddress(hNtDll, __("RtlGetNativeSystemInformation"));
 
 		_VirtualQuery VirtualQuery = (_VirtualQuery)GetProcAddress(hKEDll, __("VirtualQuery"));
-		//_IsBadReadPtr IsBadReadPtr = (_IsBadReadPtr)GetProcAddress(hKEDll, __("IsBadReadPtr"));
+		_IsBadReadPtr IsBadReadPtr = (_IsBadReadPtr)GetProcAddress(hKEDll, __("IsBadReadPtr"));
 
 		_ZwQueryInformationThread ZwQueryInformationThread = (_ZwQueryInformationThread)GetProcAddress(hNtDll, __("ZwQueryInformationThread"));
-		//_RtlUserThreadStart RtlUserThreadStart = (_RtlUserThreadStart)GetProcAddress(hNtDll, __("RtlUserThreadStart"));
-		/*
+		_RtlUserThreadStart RtlUserThreadStart = (_RtlUserThreadStart)GetProcAddress(hNtDll, __("RtlUserThreadStart"));
+		
 		if (MH_CreateHookApi(L"kernel32.dll", __("Thread32Next"), &MyThread32Next, reinterpret_cast<void**>(&Old_Thread32Next)) != MH_OK)
 		{
 			// DbgPrintA("失败Thread32Next");
 			return;
-		}*/
+		}
 		if (MH_CreateHookApi(L"kernel32.dll", __("OpenThread"), &MyOpenThread, reinterpret_cast<void**>(&Old_OpenThread)) != MH_OK)
 		{
 			// DbgPrintA("失败OpenThread");
@@ -533,12 +533,12 @@ void StartHook()
 			// DbgPrintA("失败ZwQueryVirtualMemory");
 			return;
 		}
-		/*
+		
 		if (MH_CreateHookApi(L"ntdll.dll", __("RtlUserThreadStart"), &MyRtlUserThreadStart, reinterpret_cast<void**>(&Old_RtlUserThreadStart)) != MH_OK)
 		{
 			// DbgPrintA("失败RtlUserThreadStart");
 			return;
-		}*/
+		}
 		if (MH_CreateHookApi(L"ntdll.dll", __("ZwReadVirtualMemory"), &MyZwReadVirtualMemory, reinterpret_cast<void**>(&Old_ZwReadVirtualMemory)) != MH_OK)
 		{
 			// DbgPrintA("失败ZwReadVirtualMemory");
@@ -571,24 +571,22 @@ void StartHook()
 			// DbgPrintA("失败VirtualQuery");
 			return;
 		}
-
-		/*
+		
 		HMODULE hPsapi = LoadLibraryA("psapi.dll");
-
 		_EnumProcessModulesEx EnumProcessModulesEx = (_EnumProcessModulesEx)GetProcAddress(hPsapi, "EnumProcessModulesEx");
 		if (MH_CreateHookApi(L"psapi.dll", "EnumProcessModulesEx", &MyEnumProcessModulesEx, reinterpret_cast<void**>(&Old_EnumProcessModulesEx)) != MH_OK)
 		{
 			// DbgPrintA("失败EnumProcessModulesEx");
 			return;
-		}*/
+		}
 
 		MH_STATUS sts;
-		/*
+		
 		if ((sts = NTMakeHook::NTEnableHook(&Thread32Next)) != MH_OK)
 		{
 			// DbgPrintA("Thread32Next 失败:%s", MH_StatusToString(sts));
 			return;
-		}*/
+		}
 		if ((sts = NTMakeHook::NTEnableHook(&OpenThread)) != MH_OK)
 		{
 			// DbgPrintA("OpenThread 失败:%s", MH_StatusToString(sts));
@@ -631,7 +629,7 @@ void StartHook()
 			// DbgPrintA("ZwQueryInformationThread 失败:%s", MH_StatusToString(sts));
 			return;
 		}
-		/*
+		
 		if ((sts = NTMakeHook::NTEnableHook(RtlUserThreadStart)) != MH_OK)
 		{
 			// DbgPrintA("RtlUserThreadStart 失败:%s", MH_StatusToString(sts));
@@ -642,7 +640,7 @@ void StartHook()
 		{
 			// DbgPrintA("失败:%s", MH_StatusToString(sts));
 			return;
-		}*/
+		}
 	}
 }
 void FuckEAC()

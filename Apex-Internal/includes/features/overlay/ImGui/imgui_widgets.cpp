@@ -983,9 +983,18 @@ ImColor To_Imcolor(float r, float g, float b, float a)
     return ImVec4(r / 255.0, g / 255.0, b / 255.0, a / 255.0);
 }
 
+ImVec4 ToHex(int hexValue, float alpha)
+{
+    float r = (hexValue >> 16) & 0xFF;
+    float g = (hexValue >> 8) & 0xFF;
+    float b = hexValue & 0xFF;
+
+    return ImVec4(r / 255, g / 255, b / 255, alpha);
+}
+
 bool ImGui::Checkbox(const char* label, bool* v)
 {
-    ImVec4 Col_On = ImColor(85, 0, 255, 255).Value;
+    ImVec4 Col_On = ToHex(0x5500ffd9, 1.0f);
     ImVec4 Col_Off = ImColor(28, 28, 28, 255).Value;
     int x = 16;
     ImGuiWindow* window = GetCurrentWindow();

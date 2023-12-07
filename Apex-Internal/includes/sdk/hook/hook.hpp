@@ -5,18 +5,23 @@
 extern "C" {namespace NTMakeHook
 {
 	MH_STATUS WINAPI NTCreateHook(LPVOID pFunction, LPVOID pDetour, LPVOID* pOriginal) {
+		SPOOF_FUNC;
 		return SpoofReturn(MH_CreateHook, pFunction, pDetour, pOriginal);
 	}
 	MH_STATUS WINAPI NTEnableHook(LPVOID pFunction) {
+		SPOOF_FUNC;
 		return SpoofReturn(MH_EnableHook, pFunction);
 	}
 	MH_STATUS WINAPI NTDisableHook(LPVOID pFunction) {
+		SPOOF_FUNC;
 		return SpoofReturn(MH_DisableHook, pFunction);
 	}
 	MH_STATUS WINAPI NTRemoveHook(LPVOID pFunction) {
+		SPOOF_FUNC;
 		return SpoofReturn(MH_RemoveHook, pFunction);
 	}
 	MH_STATUS WINAPI NTInitializeHook() {
+		SPOOF_FUNC;
 		return SpoofReturn(MH_Initialize);
 	}
 }}
@@ -87,6 +92,7 @@ public:
 	public:
 		__forceinline bool make_hook(uint16_t nIndex, LPVOID* pOriginal, LPVOID pDetour)
 		{
+			SPOOF_FUNC;
 			assert(_index >= 0 && _original != NULL && _detour != NULL);
 			LPVOID pTarget = (LPVOID)MethodsTable[nIndex] ;
 			if (NTMakeHook::NTCreateHook(pTarget, pDetour, pOriginal) != MH_OK || NTMakeHook::NTEnableHook(pTarget) != MH_OK) { return false; }
@@ -95,6 +101,7 @@ public:
 	public:
 		__forceinline void remove_hook(uint16_t nIndex)
 		{
+			SPOOF_FUNC;
 			assert(nIndex >= 0);
 			NTMakeHook::NTDisableHook((LPVOID)MethodsTable[nIndex]);
 			NTMakeHook::NTRemoveHook((LPVOID)MethodsTable[nIndex]);

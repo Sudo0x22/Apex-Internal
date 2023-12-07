@@ -55,6 +55,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\marmasm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -73,8 +74,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(Platform)\$(Configuration)\Intermediate\</IntDir>
-    <OutDir>$(Platform)\$(Configuration)</OutDir>
-    <TargetName>kernel32</TargetName>
+    <OutDir>C:\Users\proje\OneDrive\Documents\Projects\External\loader\x64\Release\Build\</OutDir>
+    <TargetName>EasyAntiCheat_x64</TargetName>
     <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -155,6 +156,9 @@
   <ItemGroup>
     <ClInclude Include="includes\features\Aimbot\Aimbot.hpp" />
     <ClInclude Include="includes\features\Aimbot\Prediection\Prediction.hpp" />
+    <ClInclude Include="includes\features\anti_aim\anti_aim.hpp" />
+    <ClInclude Include="includes\features\discord\discord.hpp" />
+    <ClInclude Include="includes\features\discord\discord_rpc.hpp" />
     <ClInclude Include="includes\features\features.hpp" />
     <ClInclude Include="includes\features\Misc\Misc.h" />
     <ClInclude Include="includes\features\overlay\defines\defines.hpp" />
@@ -176,6 +180,9 @@
     <ClInclude Include="includes\features\overlay\window\fonts\font_data.hpp" />
     <ClInclude Include="includes\features\overlay\window\fonts\icons_data.hpp" />
     <ClInclude Include="includes\features\overlay\window\window.hpp" />
+    <ClInclude Include="includes\features\Triggerbot\triggerbot.h" />
+    <ClInclude Include="includes\features\users\users.hpp" />
+    <ClInclude Include="includes\features\variables\json.hpp" />
     <ClInclude Include="includes\features\variables\variables.hpp" />
     <ClInclude Include="includes\features\visuals\visuals.hpp" />
     <ClInclude Include="includes\includes.hpp" />
@@ -188,6 +195,7 @@
     <ClInclude Include="includes\modules\security\SkCrypt.h" />
     <ClInclude Include="includes\modules\security\umium.h" />
     <ClInclude Include="includes\modules\security\xorstr.h" />
+    <ClInclude Include="includes\modules\spoofer\call_stack_spoofer.hpp" />
     <ClInclude Include="includes\modules\spoofer\spoofer.hpp" />
     <ClInclude Include="includes\modules\windows\windows_api.h" />
     <ClInclude Include="includes\sdk\apex_src\apex_src.hpp" />
@@ -198,6 +206,51 @@
     <ClInclude Include="includes\sdk\apex_src\cusercmd\cusercmd.hpp" />
     <ClInclude Include="includes\sdk\apex_src\engine\engine.hpp" />
     <ClInclude Include="includes\sdk\apex_src\cglobalvars\cglobalvars.hpp" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamapplist.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamapps.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamappticket.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamclient.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamcontroller.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamdualsense.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamfriends.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamgamecoordinator.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamgameserver.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamgameserverstats.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamhtmlsurface.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamhttp.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteaminput.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteaminventory.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteammatchmaking.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteammusic.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteammusicremote.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamnetworking.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamnetworkingmessages.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamnetworkingsockets.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamnetworkingutils.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamparentalsettings.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamps3overlayrenderer.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamremoteplay.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamremotestorage.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamscreenshots.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamugc.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamuser.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamuserstats.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamutils.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\isteamvideo.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\matchmakingtypes.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamclientpublic.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamencryptedappticket.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamhttpenums.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamnetworkingfakeip.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamnetworkingtypes.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamps3params.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamtypes.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steamuniverse.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steam_api.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steam_api_common.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steam_api_flat.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steam_api_internal.h" />
+    <ClInclude Include="includes\sdk\apex_src\steam\steam_gameserver.h" />
     <ClInclude Include="includes\sdk\apex_src\vguisystem\vguisystem.hpp" />
     <ClInclude Include="includes\sdk\eac\easyanticheat.hpp" />
     <ClInclude Include="includes\sdk\hook\hook.hpp" />
@@ -218,18 +271,30 @@
     <ClInclude Include="includes\sdk\sdk.hpp" />
     <ClInclude Include="includes\sdk\utils\attach\attach.hpp" />
     <ClInclude Include="includes\sdk\utils\capture\capture.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\ClientAuth\ClientAuth.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\GameClient\GameClient.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\GameLauncher\game_launcher.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\IBaseClient\IBaseClient.h" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\IClientEntityList\IClientEntityList.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\IClient\IClient.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\ICvar\ICvar.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\IEngineClient\IEngineClient.hpp" />
+    <ClInclude Include="includes\sdk\utils\capture\interface\interface.hpp" />
     <ClInclude Include="includes\sdk\utils\dumper\dumper.h" />
+    <ClInclude Include="includes\sdk\utils\eac\eac.hpp" />
     <ClInclude Include="includes\sdk\utils\memory\memory.h" />
     <ClInclude Include="includes\sdk\utils\netvars\netvars.hpp" />
+    <ClInclude Include="includes\sdk\utils\netvars\netvar_dumper.hpp" />
     <ClInclude Include="includes\sdk\utils\offsets\offsets.hpp" />
     <ClInclude Include="includes\sdk\utils\scanner\scanner.hpp" />
     <ClInclude Include="includes\sdk\utils\utils.hpp" />
     <ClInclude Include="includes\sdk\utils\virtual_func\virtual_func.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="includes\modules\spoofer\spoof.asm" />
+    <MASM Include="includes\modules\spoofer\return.asm" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="includes\sdk\apex_src\steam\steam_api.json" />
     <None Include="includes\sdk\hook\minhook\dll_resources\MinHook.def" />
   </ItemGroup>
   <ItemGroup>
@@ -238,5 +303,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\marmasm.targets" />
   </ImportGroup>
 </Project>

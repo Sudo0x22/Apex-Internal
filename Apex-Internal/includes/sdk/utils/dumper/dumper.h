@@ -5,13 +5,16 @@ class Proc
 {
 public:
 	BOOL WINAPI NtReadProcMem(HANDLE hProcess, LPCVOID SourceAddress, LPVOID Buffer, SIZE_T Size, SIZE_T* Bytes) {
-		return SpoofReturn(__safecall(ReadProcessMemory).get(), hProcess, SourceAddress, Buffer, Size, Bytes);
+		//return SpoofReturn(__safecall(ReadProcessMemory).get(), hProcess, SourceAddress, Buffer, Size, Bytes);
+		return spoof_call_ex(jmp_rbx_0, __safecall(ReadProcessMemory).get(), hProcess, SourceAddress, Buffer, Size, Bytes);
 	}
 	size_t __cdecl NtStrlen(const char* offset) {
-		return SpoofReturn(__safecall(strlen).get(), offset);
+		//return SpoofReturn(__safecall(strlen).get(), offset);
+		return spoof_call_ex(jmp_rbx_0, __safecall(strlen).get(), offset);
 	}
 	long __cdecl NtStrtol(const char* offset, char** pointer, int value) {
-		return SpoofReturn(__safecall(strtol).get(), offset, pointer, value);
+		//return SpoofReturn(__safecall(strtol).get(), offset, pointer, value);
+		return spoof_call_ex(jmp_rbx_0, __safecall(strtol).get(), offset, pointer, value);
 	}
 }; Proc* pProc;
 
@@ -62,7 +65,7 @@ public:
 			if (mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS)
 				continue;
 			buffer = new CHAR[mbi.RegionSize];
-			__safecall(ReadProcessMemory).get()(hProc, mbi.BaseAddress, buffer, mbi.RegionSize, &bytes_read);
+			pProc->NtReadProcMem(hProc, mbi.BaseAddress, buffer, mbi.RegionSize, &bytes_read);
 			CHAR* internal_address = scan_pattern(pattern, mask, buffer, (UINT)bytes_read);
 			if (internal_address != nullptr)
 			{
@@ -82,7 +85,7 @@ public:
 		CHAR lastChar = ' ';
 		UINT nindex = 0;
 
-		DWORD64 dw_base = (DWORD64)__safecall(GetModuleHandleA).get()(NULL);
+		DWORD64 dw_base = (DWORD64)spoof_call_ex(jmp_rbx_0, __safecall(GetModuleHandleA).get(), "");
 		DWORD64 module_size = m_pMemory->pNtImages->NtGetModuleSize(dw_base);
 		HANDLE hProc = m_pMemory->pNTModules->NTGetCurrentProcess();
 
@@ -170,6 +173,9 @@ public:
 	DWORD64 glow_enable = 0x0;
 	DWORD64 glow_color = 0x0;
 	DWORD64 glow_type = 0x0;
+
+	DWORD64 m_thirdPersonShoulderView = 0x0;
+	DWORD64 thirdperson_override = 0x0;
 public:
 	DWORD64 DumpOffsets(DWORD64 Address, int del = 6, int offset = 0)
 	{
@@ -182,20 +188,10 @@ public:
 public:
 	NTSTATUS Initialize()
 	{
-		auto IClientEntityList = pDumperPatterns->FindPattern(__("4C 8D 05 ? ? ? ? 4C 8B 25 ? ? ? ?"));
-		this->cl_entitylist = (DWORD64)IClientEntityList;
-
-		auto IClientLocalPlayer = pDumperPatterns->FindPattern(__("48 8B 05 ? ? ? ? 48 0F 44 C7"));
-		this->dw_local_entity = (DWORD64)IClientLocalPlayer;
-
-		auto IClientViewRender = pDumperPatterns->FindPattern(__("48 8B 0D ? ? ? ? 48 8B 01 FF 50 40 48 8B 0D ? ? ? ?"));
-		this->dw_view_render = (DWORD64)IClientViewRender;
-
-		auto IClientViewMatrix = pDumperPatterns->FindPattern(__("48 8D 1D ? ? ? ? 66 0F 1F 84 00 00 00 00 00 48 8B 01 48 0F BE F7 49 3B C6 0F 85"));
-		this->dw_view_matrix = (DWORD64)IClientViewMatrix;
-
-		auto IClientGlobalVars = pDumperPatterns->FindPattern(__("4C 8D 05 ? ? ? ? 48 8D 15 ? ? ? ? 41 FF D1"));
-		this->dw_global_vars = (DWORD64)IClientGlobalVars;
+		this->cl_entitylist = (DWORD64)pDumperPatterns->FindPattern("");
+		this->dw_local_entity = (DWORD64)pDumperPatterns->FindPattern("");
+		this->m_thirdPersonShoulderView = (DWORD64)pDumperPatterns->FindPattern("");
+		this->thirdperson_override = (DWORD64)pDumperPatterns->FindPattern("");
 
 		return true;
 	}

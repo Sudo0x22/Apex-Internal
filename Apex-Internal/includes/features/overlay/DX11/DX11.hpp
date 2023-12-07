@@ -15,23 +15,32 @@ class NtCreateWindow
 {
 public:
 	ATOM WINAPI NtRegisterWnd(const WNDCLASSEX* oWndClass) {
-		return SpoofReturn(RegisterClassEx, oWndClass);
+		SPOOF_FUNC;
+		//return SpoofReturn(RegisterClassEx, oWndClass);
+		return spoof_call_ex(jmp_rbx_0, RegisterClassEx, oWndClass);
 	}
 	ATOM WINAPI NtUnregisterWnd(LPCWSTR Class, _In_ HINSTANCE hInst) {
-		return SpoofReturn(UnregisterClass, Class, hInst);
+		SPOOF_FUNC;
+		//return SpoofReturn(UnregisterClass, Class, hInst);
+		return spoof_call_ex(jmp_rbx_0, UnregisterClass, Class, hInst);
 	}
 	BOOL WINAPI NtDeleteWindow(HWND hWindow) {
-		return SpoofReturn(__safecall(DestroyWindow).get(), hWindow);
+		SPOOF_FUNC;
+		//return SpoofReturn(__safecall(DestroyWindow).get(), hWindow);
+		return spoof_call_ex(jmp_rbx_0, __safecall(DestroyWindow).get(), hWindow);
 	}
 	HWND WINAPI NtCreateWindowEx(DWORD Exit, LPCWSTR Class, LPCWSTR Name, DWORD Style, int x, int y, int w, int h, HWND hWindow,
 		HMENU hMenu, HINSTANCE hInst, LPVOID Param) {
-		return SpoofReturn(CreateWindowExW, Exit, Class, Name, Style, x, y, w, h, hWindow, hMenu, hInst, Param);
+		SPOOF_FUNC;
+		//return SpoofReturn(CreateWindowExW, Exit, Class, Name, Style, x, y, w, h, hWindow, hMenu, hInst, Param);
+		return spoof_call_ex(jmp_rbx_0, CreateWindowExW, Exit, Class, Name, Style, x, y, w, h, hWindow, hMenu, hInst, Param);
 	}
 	
 }; NtCreateWindow* pWindowEx = new NtCreateWindow();
 
 bool DX11::InitWindow()
 {
+	SPOOF_FUNC
 	pD3D11->WindowClass.cbSize = sizeof(WNDCLASSEX);
 	pD3D11->WindowClass.style = CS_HREDRAW | CS_VREDRAW;
 	pD3D11->WindowClass.lpfnWndProc = DefWindowProc;
@@ -58,6 +67,7 @@ bool DX11::InitWindow()
 
 bool DX11::DeleteWindow()
 {
+	SPOOF_FUNC
 	pWindowEx->NtDeleteWindow(pD3D11->WindowHwnd);
 	pWindowEx->NtUnregisterWnd(pD3D11->WindowClass.lpszClassName, pD3D11->WindowClass.hInstance);
 	if (pD3D11->WindowHwnd != NULL) { return false; }
@@ -66,6 +76,7 @@ bool DX11::DeleteWindow()
 
 bool DX11::Initialize()
 {
+	SPOOF_FUNC
 	if (this->InitWindow() == false) { this->DeleteWindow(); return false; }
 
 	HINSTANCE hModule = m_pMemory->pNTModules->NtGetModuleHandleExW(skCrypt("d3d11.dll").decrypt());
