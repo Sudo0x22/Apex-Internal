@@ -130,10 +130,10 @@ public:
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 
-		D3DX11_IMAGE_LOAD_INFO info;
+		/*D3DX11_IMAGE_LOAD_INFO info;
 		ID3DX11ThreadPump* pump{ nullptr };
 		D3DX11CreateShaderResourceViewFromMemory(pD3D11->pDevice, rawData, sizeof(rawData), &info,
-			pump, &Image, 0);
+			pump, &Image, 0);*/
 
 		ImGui_ImplWin32_Init(pD3D11->hWindow);
 		ImGui_ImplDX11_Init(pD3D11->pDevice, pD3D11->pContext);

@@ -1748,6 +1748,10 @@ inline c_matrix get_matrix()
 	return *(c_matrix*)(viewMatrix);
 }
 
+int ret_system(int index) {
+	return spoof_call_ex(jmp_rbx_0, GetSystemMetrics, index);
+}
+
 bool world_to_screen(Vector in, Vector2D& out)
 {
 	SPOOF_FUNC;
@@ -1764,16 +1768,16 @@ bool world_to_screen(Vector in, Vector2D& out)
 	out.x *= invw;
 	out.y *= invw;
 
-	float xx = GetSystemMetrics(SM_CXSCREEN) / 2;
-	float xy = GetSystemMetrics(SM_CYSCREEN) / 2;
+	float xx = ret_system(SM_CXSCREEN) / 2;
+	float xy = ret_system(SM_CYSCREEN) / 2;
 
-	xx += 0.5 * out.x * GetSystemMetrics(SM_CXSCREEN) + 0.5;
-	xy -= 0.5 * out.y * GetSystemMetrics(SM_CYSCREEN) + 0.5;
+	xx += 0.5 * out.x * ret_system(SM_CXSCREEN) + 0.5;
+	xy -= 0.5 * out.y * ret_system(SM_CYSCREEN) + 0.5;
 
 	out.x = xx;
 	out.y = xy;
 
-	if (out.x > GetSystemMetrics(SM_CXSCREEN) || out.x < 0 || out.y > GetSystemMetrics(SM_CYSCREEN) || out.y < 0)
+	if (out.x > ret_system(SM_CXSCREEN) || out.x < 0 || out.y > ret_system(SM_CYSCREEN) || out.y < 0)
 		return false;
 
 	return true;
